@@ -32,7 +32,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
         // 获取客户端传输过来的消息
         String content = textWebSocketFrame.text();
-        System.out.println("接收过来的数据" + content);
+        log.info("接收过来的数据" + content);
 
         Channel currentChannel = channelHandlerContext.channel();
 
@@ -51,7 +51,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 
             // 当receiverChannel不为空的时候，从ChannelGroup去查找对应的channel是否存在
 //        Channel findChannel = channelGroup.find(receiverChannel.id());
-            receiverChannel.writeAndFlush(
+            channelGroup.writeAndFlush(
                     new TextWebSocketFrame(
                             gson.toJson(dataContent)));
         /*for (Channel channel : channelGroup) {
@@ -78,7 +78,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         Channel channel = ctx.channel();
         // 当触发 handlerRemoved  ChannelGroup会自动移除客户端的channel
 //        channelGroup.remove(channel);
-        System.out.println("客户端断开 channel对应的长id:" + channel.id().asLongText());
-        System.out.println("客户端断开 channel对应的短id:" + channel.id().asShortText());
+        log.info("客户端断开 channel对应的长id:" + channel.id().asLongText());
+        log.info("客户端断开 channel对应的短id:" + channel.id().asShortText());
     }
 }
