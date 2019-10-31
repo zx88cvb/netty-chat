@@ -9,6 +9,8 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * 初始化器 channel注册后 会执行相应初始化方法
@@ -16,6 +18,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @Date 19-10-30
  */
 public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
+
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();

@@ -1,5 +1,9 @@
 package com.angel.nettychat.handler;
 
+import com.angel.nettychat.common.enmus.MsgActionEnum;
+import com.angel.nettychat.model.dto.DataContent;
+import com.angel.nettychat.utils.UserChannelRel;
+import com.google.gson.Gson;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -7,6 +11,9 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +23,7 @@ import java.time.LocalDateTime;
  * 处理消息的handler
  * TextWebSocketFrame： 在netty中，是用于为websocket专门处理文本的对象，frame是消息的载体
  */
+@Slf4j
 public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     // 用于记录和管理所有客户端的channel
     private static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -26,8 +34,29 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         String content = textWebSocketFrame.text();
         System.out.println("接收过来的数据" + content);
 
-        for (Channel channel : channelGroup) {
+        Channel currentChannel = channelHandlerContext.channel();
+
+        // 将客户端传过来的json数据转成对象
+        Gson gson = new Gson();
+        DataContent dataContent = gson.fromJson(content, DataContent.class);
+
+        // 如果是聊天消息
+        if (MsgActionEnum.CHAT.getType() == dataContent.getAction()) {
+            // 将用户id和channel加入到UserChannelRel
+            UserChannelRel.put(dataContent.getChatMsg().getSenderId(), currentChannel);
+
+            // 发送消息
+            // 从全局用户Channel关系中获取接受方的channel
+            Channel receiverChannel = UserChannelRel.get(dataContent.getChatMsg().getSenderId());
+
+            // 当receiverChannel不为空的时候，从ChannelGroup去查找对应的channel是否存在
+//        Channel findChannel = channelGroup.find(receiverChannel.id());
+            receiverChannel.writeAndFlush(
+                    new TextWebSocketFrame(
+                            gson.toJson(dataContent)));
+        /*for (Channel channel : channelGroup) {
             channel.writeAndFlush(new TextWebSocketFrame("服务器时间:" + LocalDateTime.now() + ",消息为:" + content));
+        }*/
         }
 
     }
