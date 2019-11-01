@@ -31,7 +31,7 @@ public class WSServer {
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
 
     @Autowired
-    private WSServer wsServer;
+    private WSServerInitialzer wsServerInitialzer;
 
     @Value("${netty.port}")
     private int port;
@@ -58,7 +58,7 @@ public class WSServer {
                  * 设置chanel初始化器
                  * 每一个chanel由多个handler共同组成管道(pipeline)
                  */
-                .childHandler(new WSServerInitialzer());
+                .childHandler(wsServerInitialzer);
 
         /**
          * 启动

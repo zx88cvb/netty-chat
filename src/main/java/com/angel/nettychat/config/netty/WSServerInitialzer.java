@@ -10,6 +10,8 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +19,12 @@ import org.springframework.stereotype.Component;
  * @Author angel
  * @Date 19-10-30
  */
+@Component
+@Qualifier("wSServerInitialzer")
 public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
+
+    @Autowired
+    private ChatHandler chatHandler;
 
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
@@ -57,6 +64,6 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
 
         // 自定义的handler
-        pipeline.addLast(new ChatHandler());
+        pipeline.addLast(chatHandler);
     }
 }

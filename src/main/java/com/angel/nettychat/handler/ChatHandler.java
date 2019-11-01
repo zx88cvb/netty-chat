@@ -5,6 +5,7 @@ import com.angel.nettychat.model.dto.DataContent;
 import com.angel.nettychat.utils.UserChannelRel;
 import com.google.gson.Gson;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -13,6 +14,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,10 +26,16 @@ import java.time.LocalDateTime;
  * 处理消息的handler
  * TextWebSocketFrame： 在netty中，是用于为websocket专门处理文本的对象，frame是消息的载体
  */
+@Component
+@Qualifier("chatHandler")
+@ChannelHandler.Sharable
 @Slf4j
 public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     // 用于记录和管理所有客户端的channel
     private static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+
+    @Autowired
+    private Gson gson;
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
@@ -37,7 +46,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         Channel currentChannel = channelHandlerContext.channel();
 
         // 将客户端传过来的json数据转成对象
-        Gson gson = new Gson();
+//        Gson gson = new Gson();
         DataContent dataContent = gson.fromJson(content, DataContent.class);
 
         // 如果是聊天消息
