@@ -1,6 +1,7 @@
 package com.angel.nettychat.config.netty;
 
 import com.angel.nettychat.handler.ChatHandler;
+import com.angel.nettychat.handler.HeartBeatHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -26,6 +27,9 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
     @Autowired
     private ChatHandler chatHandler;
 
+    @Autowired
+    private HeartBeatHandler heartBeatHandler;
+
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
@@ -47,7 +51,7 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
         // 如果是读空闲或者写空闲，不处理
         // pipeline.addLast(new IdleStateHandler(8, 10, 12));
         // 自定义的空闲状态检测
-        // pipeline.addLast(new HeartBeatHandler());
+        // pipeline.addLast(heartBeatHandler);
         // ====================== 增加心跳支持 end    ======================
 
 
