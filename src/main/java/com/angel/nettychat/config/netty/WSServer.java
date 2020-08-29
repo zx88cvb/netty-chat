@@ -5,6 +5,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import java.net.InetSocketAddress;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class WSServer {
     /**
      * 定义一对线程组（两个线程池）
@@ -30,8 +32,8 @@ public class WSServer {
     //定义从线程组，主线程组会把任务转给从线程组进行处理
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-    @Autowired
-    private WSServerInitialzer wsServerInitialzer;
+//    @Autowired
+    private final WSServerInitialzer wsServerInitialzer;
 
     @Value("${netty.port}")
     private int port;

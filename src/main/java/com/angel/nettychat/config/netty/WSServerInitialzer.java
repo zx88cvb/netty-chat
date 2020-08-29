@@ -22,13 +22,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Qualifier("wSServerInitialzer")
+@AllArgsConstructor
 public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
 
-    @Autowired
-    private ChatHandler chatHandler;
+//    @Autowired
+    private final ChatHandler chatHandler;
 
-    @Autowired
-    private HeartBeatHandler heartBeatHandler;
+//    @Autowired
+    private final HeartBeatHandler heartBeatHandler;
 
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {

@@ -30,12 +30,13 @@ import java.time.LocalDateTime;
 @Qualifier("chatHandler")
 @ChannelHandler.Sharable
 @Slf4j
+@AllArgsConstructor
 public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     // 用于记录和管理所有客户端的channel
     public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    @Autowired
-    private Gson gson;
+//    @Autowired
+    private final Gson gson;
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
